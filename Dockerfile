@@ -7,9 +7,8 @@ RUN apt-get update && apt-get -y install python3 python3-pip
 RUN mkdir /app
 
 # Copia i tuoi script nella directory del contenitore
-COPY server.py /app
-COPY catch_temperature.py /app
-COPY send_data.py /app
+COPY temperature_monitor/server.py /app
+COPY temperature_monitor/catch_temperature.py /app
 
 # Imposta la directory di lavoro all'interno del contenitore
 WORKDIR /app
