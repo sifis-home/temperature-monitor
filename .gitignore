@@ -1,5 +1,4 @@
 # Ignore dotfiles except for the .gitignore dotfile
-.*
 !.gitignore
 !.pre-commit-config.yaml
 !.gitmodules
