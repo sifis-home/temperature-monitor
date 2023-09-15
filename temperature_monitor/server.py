@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 data_dict = defaultdict(list)
 last_update_time = time.time()
-url = "http://146.48.89.28:3000/"
+url = "http://localhost:3000/"
 
 
 def send_data(temp):

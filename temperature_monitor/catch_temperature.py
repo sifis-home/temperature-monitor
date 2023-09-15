@@ -43,7 +43,7 @@ def on_open(ws):
 
 if __name__ == "__main__":
     ws = websocket.WebSocketApp(
-        "ws://domhomassistant.duckdns.org:17898/ws",
+        "ws://localhost:3000/ws",
         on_open=on_open,
         on_message=on_message,
         on_error=on_error,
