@@ -32,7 +32,7 @@ def send_data(temp):
         .replace("\n", "")
         .replace(" ", "")
     )
-    topic_name = "SIFIS:Privacy_Aware_Device_Anomaly_Detection_monitor"
+    topic_name = "SIFIS:Privacy_Aware_Device_Anomaly_Detection"
     topic_uuid = "Anomaly_Detection_monitor"
     temp_info = {
         "description": "Device Anomaly Detection monitor",
