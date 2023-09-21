@@ -73,14 +73,14 @@ def add_last_temps():
         time.sleep(60 / 48)
         for name, temps in data_dict.items():
             if len(temps) > 0:
-                data_dict[name].append(temps[-1])
+                data_dict[name].append(str(temps[-1]))
     threading.Timer(60 / 48, add_last_temps).start()
 
 
 def check_and_add_temp(name, temperature):
     global data_dict
     if time.time() - start_time < 60:
-        data_dict[name].append(temperature)
+        data_dict[name].append(str(temperature))
         if len(data_dict[name]) > 48:
             data_dict[name] = data_dict[name][-48:]
         elif len(data_dict[name]) < 48:
@@ -90,7 +90,7 @@ def check_and_add_temp(name, temperature):
             return
         if len(data_dict[name]) == 48:
             data_dict[name] = data_dict[name][1:]
-        data_dict[name].append(temperature)
+        data_dict[name].append(str(temperature))
 
         last_47_temps = data_dict[name][-47:]
         last_temp = data_dict[name][-1]
