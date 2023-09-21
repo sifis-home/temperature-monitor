@@ -18,7 +18,7 @@ def on_message(ws, message):
                 temperature = json_message["temperature"]
                 name = json_message["name"]
                 data = {"name": name, "temperature": temperature}
-                url = "http://localhost:6600/temperature"
+                url = "http://localhost:6000/temperature"
                 response = requests.post(url, json=data)
                 print(name, temperature)
                 if response.status_code == 200:
