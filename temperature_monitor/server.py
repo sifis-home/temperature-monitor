@@ -6,18 +6,32 @@ import re
 import threading
 import time
 from collections import defaultdict
+import socket
+
 
 import requests
+#import send_data
 from flask import Flask, request
 
 app = Flask(__name__)
 
 data_dict = defaultdict(list)
 last_update_time = time.time()
-url = "http://localhost:3000/"
+url = "http://146.48.62.97:3000/"
 
 
-def send_data(temp):
+def send_data(temperature):
+
+     ## getting the hostname by socket.gethostname() method
+    hostname = socket.gethostname()
+    ## getting the IP address using socket.gethostbyname() method
+    ip_address = socket.gethostbyname(hostname)
+    ## printing the hostname and ip_address
+    print(f"Hostname: {hostname}")
+    print(f"IP Address: {ip_address}")
+
+    requestor_id = ip_address
+
     # Get current date and time
     now = datetime.datetime.now()
 
@@ -25,7 +39,6 @@ def send_data(temp):
     hash_object = hashlib.sha256()
     hash_object.update(bytes(str(now), "utf-8"))
     hash_value = hash_object.hexdigest()
-    requestor_id = platform.node()
     request_id = str(requestor_id) + str(now) + hash_value
     request_id = (
         re.sub("[^a-zA-Z0-9\n\.]", "", request_id)
@@ -33,14 +46,21 @@ def send_data(temp):
         .replace(" ", "")
     )
     topic_name = "SIFIS:Privacy_Aware_Device_Anomaly_Detection"
-    topic_uuid = "Anomaly_Detection_monitor"
+    topic_uuid = "Anomaly_Detection"
+    temperature_string_list = []
+
+    temperature_string = str(temperature).replace("[", "").replace("]", "")
+    temperature_string_list.append(temperature_string)
+    print("List of temperatures:", temperature_string_list)
+    requestor_type = "NSSD"
     temp_info = {
-        "description": "Device Anomaly Detection monitor",
+        "description": "Device Anomaly Detection",
         "requestor_id": str(requestor_id),
         "request_id": str(request_id),
+        "requestor_type": str(requestor_type),
         "connected": True,
         "Data Type": "List",
-        "Temperatures": temp,
+        "Temperatures": temperature_string_list,
     }
     requests.post(
         url + "topic_name/" + topic_name + "/topic_uuid/" + topic_uuid,
@@ -73,14 +93,14 @@ def add_last_temps():
         time.sleep(60 / 48)
         for name, temps in data_dict.items():
             if len(temps) > 0:
-                data_dict[name].append(str(temps[-1]))
+                data_dict[name].append(temps[-1])
     threading.Timer(60 / 48, add_last_temps).start()
 
 
 def check_and_add_temp(name, temperature):
     global data_dict
     if time.time() - start_time < 60:
-        data_dict[name].append(str(temperature))
+        data_dict[name].append(temperature)
         if len(data_dict[name]) > 48:
             data_dict[name] = data_dict[name][-48:]
         elif len(data_dict[name]) < 48:
@@ -90,7 +110,7 @@ def check_and_add_temp(name, temperature):
             return
         if len(data_dict[name]) == 48:
             data_dict[name] = data_dict[name][1:]
-        data_dict[name].append(str(temperature))
+        data_dict[name].append(temperature)
 
         last_47_temps = data_dict[name][-47:]
         last_temp = data_dict[name][-1]
@@ -101,6 +121,7 @@ def check_and_add_temp(name, temperature):
             "timestamp": time.time(),
         }
         temp = log_data["last_48_temps"]
+        print(temp)
         with open("temp4_log.txt", "a") as log_file:
             log_file.write(json.dumps(log_data) + "\n")
             send_data(temp)
