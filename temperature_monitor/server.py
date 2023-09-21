@@ -103,7 +103,7 @@ def check_and_add_temp(name, temperature):
         temp = log_data["last_48_temps"]
         with open("temp4_log.txt", "a") as log_file:
             log_file.write(json.dumps(log_data) + "\n")
-            send_data.send_data(temp)
+            send_data(temp)
 
 
 @app.route("/temperature", methods=["POST"])
